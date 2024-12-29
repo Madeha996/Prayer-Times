@@ -9,6 +9,7 @@ import Select from "@mui/material/Select";
 import axios from "axios";
 import moment from "moment";
 import "moment/dist/locale/ar-dz";
+import Loader from "./components/Loader";
 
 moment().locale("ar");
 export const MainContent = () => {
@@ -26,6 +27,7 @@ export const MainContent = () => {
   const [today, setToday] = useState("");
   const [nextPrayerIndex, setNextPrayerIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const data = [
     { id: 0, title: "الفجر", time: timings.Fajr },
@@ -111,6 +113,7 @@ export const MainContent = () => {
     setRemainingTime(
       `${durationRemainingTime.seconds()} : ${durationRemainingTime.minutes()} : ${durationRemainingTime.hours()}`
     );
+    setIsLoading(false);
   }, [timings]);
 
   useEffect(() => {
@@ -132,70 +135,75 @@ export const MainContent = () => {
 
   return (
     <>
-      {/* Top Row*/}
-      <Grid container>
-        <Grid size={6}>
-          <div>
-            <h2>{today}</h2>
-            <h1>{city.name}</h1>
-          </div>
-        </Grid>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Grid container>
+            <Grid size={{ xs: 24, md: 6 }}>
+              <div>
+                <h2>{today}</h2>
+                <h1>{city.name}</h1>
+              </div>
+            </Grid>
 
-        <Grid size={6}>
-          <div>
-            <h2>متبقي حتى صلاة {prayersArray[nextPrayerIndex].name}</h2>
-            <h1>{remainingTime}</h1>
-          </div>
-        </Grid>
-      </Grid>
-      {/*== Top Row ==*/}
-      <Divider
-        style={{ borderColor: "#fff", opacity: "0.2", marginTop: "10px" }}
-      />
-
-      {/* Prayer Cards */}
-      <Stack
-        direction={"row"}
-        justifyContent={"space-between"}
-        style={{
-          marginTop: "50px",
-          marginBottom: "50px",
-        }}
-      >
-        {data.map((item) => {
-          return (
-            <CustomCard key={item.id} time={item.time} title={item.title} />
-          );
-        })}
-      </Stack>
-      {/*== Prayer Cards ==*/}
-
-      <Divider style={{ borderColor: "#fff", opacity: "0.2" }} />
-
-      {/* Selector */}
-      <Stack direction="row" justifyContent="center">
-        <FormControl
-          variant="standard"
-          style={{ backgroundColor: "#fff", width: "200px" }}
-        >
-          <InputLabel id="demo-simple-select-label">المدينة</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={city.isoName}
-            label="المدينة"
-            onChange={handleChange}
+            <Grid size={{ xs: 24, md: 6 }}>
+              <div>
+                <h2>متبقي حتى صلاة {prayersArray[nextPrayerIndex].name}</h2>
+                <h1>{remainingTime}</h1>
+              </div>
+            </Grid>
+          </Grid>
+          {/*== Top Row ==*/}
+          <Divider
+            style={{ borderColor: "#fff", opacity: "0.2", marginTop: "10px" }}
+          />
+          {/* Prayer Cards */}
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            style={{
+              marginTop: "50px",
+              marginBottom: "50px",
+              flexWrap: "wrap",
+              gap: "20px",
+            }}
           >
-            {cities.map((option) => {
+            {data.map((item) => {
               return (
-                <MenuItem key={option.name} value={option.isoName}>
-                  {option.name}
-                </MenuItem>
+                <CustomCard key={item.id} time={item.time} title={item.title} />
               );
             })}
-          </Select>
-        </FormControl>
-      </Stack>
+          </Stack>
+          {/*== Prayer Cards ==*/}
+          <Divider style={{ borderColor: "#fff", opacity: "0.2" }} />
+          {/* Selector */}
+          <Stack direction="row" justifyContent="center">
+            <FormControl
+              variant="standard"
+              style={{ backgroundColor: "#fff", width: "200px" }}
+            >
+              <InputLabel id="demo-simple-select-label">المدينة</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={city.isoName}
+                label="المدينة"
+                onChange={handleChange}
+              >
+                {cities.map((option) => {
+                  return (
+                    <MenuItem key={option.name} value={option.isoName}>
+                      {option.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Stack>{" "}
+        </>
+      )}
     </>
   );
 };
