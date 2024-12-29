@@ -10,12 +10,17 @@ import axios from "axios";
 import moment from "moment";
 import "moment/dist/locale/ar-dz";
 import Loader from "./components/Loader";
+import fajrImg from "./assets/img-1.jpeg";
+import duhrImg from "./assets/img-2.jpeg";
+import asrImg from "./assets/img-3.jpeg";
+import sunsetrImg from "./assets/img-4.jpeg";
+import ishaImg from "./assets/img-5.jpeg";
 
 moment().locale("ar");
 export const MainContent = () => {
   const [city, setCity] = useState({
-    name: "مكة المكرمة",
-    isoName: "Makah al Mukaramah",
+    name: "دمشق",
+    isoName: "Damascus",
   });
   const [timings, setTimings] = useState({
     Fajr: "0:00",
@@ -30,18 +35,18 @@ export const MainContent = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const data = [
-    { id: 0, title: "الفجر", time: timings.Fajr },
-    { id: 1, title: "الظهر", time: timings.Dhuhr },
-    { id: 2, title: "العصر", time: timings.Asr },
-    { id: 3, title: "المغرب", time: timings.Sunset },
-    { id: 4, title: "العشاء", time: timings.Isha },
+    { id: 0, title: "الفجر", time: timings.Fajr, img: fajrImg },
+    { id: 1, title: "الظهر", time: timings.Dhuhr, img: duhrImg },
+    { id: 2, title: "العصر", time: timings.Asr, img: asrImg },
+    { id: 3, title: "المغرب", time: timings.Sunset, img: sunsetrImg },
+    { id: 4, title: "العشاء", time: timings.Isha, img: ishaImg },
   ];
   const cities = [
     {
-      name: "مكة المكرمة",
-      isoName: "Makah al Mukaramah",
+      name: " دمشق",
+      isoName: "Damascus",
     },
-    { name: "الرياض", isoName: "Riyadh" },
+    { name: "اللاذقية", isoName: "Latakia" },
   ];
 
   const prayersArray = [
@@ -61,7 +66,7 @@ export const MainContent = () => {
 
   const getTimings = useCallback(async () => {
     const res = await axios.get(
-      `https://api.aladhan.com/v1/timingsByCity?country=SA&city=${city.isoName}`
+      `https://api.aladhan.com/v1/timingsByCity?country=SY&city=${city.isoName}`
     );
     setTimings(res?.data?.data?.timings);
   }, [city]);
@@ -172,7 +177,12 @@ export const MainContent = () => {
           >
             {data.map((item) => {
               return (
-                <CustomCard key={item.id} time={item.time} title={item.title} />
+                <CustomCard
+                  key={item.id}
+                  time={item.time}
+                  title={item.title}
+                  cardImg={item.img}
+                />
               );
             })}
           </Stack>
